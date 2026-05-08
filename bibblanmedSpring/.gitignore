@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 # IntelliJ kompilat (lägg till denna)
 /out/
+.idea/
+*.iml
 
 ### STS ###
 .apt_generated
@@ -30,6 +32,17 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+
+# Maven
+target/
+mvnw
+mvnw.cmd
+.mvn/
+
+
+# OS
+.DS_Store
 
 ### VS Code ###
 .vscode/

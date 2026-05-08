@@ -1,9 +1,10 @@
 package com.example.bibblanmedspring;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -12,15 +13,6 @@ public class BookController {
 
     private final BookService bookService;
     private final AuthorService authorService;
-    private String htmlString1;
-    private String htmlString2;
-    private String content;
-    private String content1;
-    private String div;
-    private String divA;
-    private String divE;
-    private String divAE;
-    private String style;
 
     BookController(BookService b, AuthorService authorService){
         this.bookService = b;
@@ -28,14 +20,38 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public List<Book> getAllBooks(){
-
-        return bookService.getAllBooks();
+    public ResponseEntity <List<BookDto>> getAllBooks(){
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
+
+    @GetMapping("/books/{id}")
+    public ResponseEntity<BookDto> getById(@PathVariable Long id){
+        return ResponseEntity.ok(bookService.getById(id));
+    }
+
+    @PostMapping("/books")
+    public ResponseEntity<BookDto> create(@Valid @RequestBody CreateBookDto dto){
+        BookDto created = bookService.create(dto);
+        URI location = URI.create("/books/" + created.getId());
+        return ResponseEntity.created(location).body(created);
+
+        //return ResponseEntity.status(201).body(created);
+    }
+
+
     @GetMapping("/test")
     public String getHtml(){
-        List <Book> allBooks = bookService.getAllBooks();
+        String htmlString1= "";
+        String htmlString2 = "";
+        String content = "";
+        String content1= "";
+        String div = "";
+        String style = "";
+        String divE = "";
+        List <BookDto> allBooks = bookService.getAllBooks();
         List <Author> allAuthors = authorService.getAllAuthors();
+        System.out.println("Authors count: " + allAuthors.size());
+        System.out.println("Books count: " + allBooks.size());
 
         style = "<style> " +
                 "container{display:flex; align-items:center; justify-content: center; background-color:black; flex-direction:column;}" +
@@ -48,8 +64,8 @@ public class BookController {
         content = "<rubrik>Alla böcker </rubrik>"+ "<br>";
         htmlString1 = "<books>";
         int counter = 1;
-        for (Book b: allBooks){
-            htmlString1 += counter+". " + b.getTitle() + " av: " + b.getAuthor().getFirstName() + " " + b.getAuthor().getLastName() + "<br>";
+        for (BookDto b: allBooks){
+            htmlString1 += counter+". " + b.getTitle() + " av: " + b.getAuthorName() + "<br>";
             counter++;
         }
         htmlString1 += "</books>";
@@ -59,7 +75,7 @@ public class BookController {
 
 
         content1 = "<rubrik>Alla Författare </rubrik>"+ "<br>";
-        htmlString2 += "<authors>";
+        htmlString2 = "<authors>";
         int counterA = 1;
         for (Author a: allAuthors){
             htmlString2 += counterA+". " + a.getBorn() + " av: " + a.getCreatedAt() + " " + a.getUpdatedAt() + "<br>";

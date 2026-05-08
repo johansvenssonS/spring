@@ -1,7 +1,7 @@
 package com.example.bibblanmedspring;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 @SpringBootTest
 class BibblanmedSpringApplicationTests {
