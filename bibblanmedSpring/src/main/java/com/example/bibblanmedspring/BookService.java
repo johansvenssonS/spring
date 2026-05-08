@@ -29,7 +29,7 @@ public class BookService {
     //@Transactional(readOnly = true)
     public BookDto getById(Long id ){
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bok med id" + id + "hittades ej!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bok med id" + id + "hittades ej!"));
         return bookMapper.toDto(book);
     }
 
